@@ -1,12 +1,16 @@
 # MTK SP Flash Tool Readback feature file generator
 
-Phones on MTK processors can be fully backed up woth the use of SP Flash Tool utility. This backup can be used for restoring phone's functionality after major problews with its firmware, including full dead brick (wrong flash of boot.img, preloader.bin) that does not react on buttons no logo, no charging sign. The NVRAM and NVDATA partitions that contain IMEI numbers, reuired for the phone operation, can be backed up.
+Link to the script: https://github.com/Eb43/readbackbackup/blob/main/converter.html
 
-In order to make SP Flash Tool functional a phone must have an unlocked bootloader. Not all smartphone vendors allow to unlock bootloader. The butloader has to be unlocked when the phone is functioning normally.
+Phones on MTK processors (typically Xiaomi, Poco, Redmi, Vivo, Oppo, Realme, Motorola, Nokia, Alcatel, Techno, ZTE) can be fully backed up woth the use of SP Flash Tool utility. This backup can be used for restoring phone's functionality after major problews with its firmware, including full dead brick (wrong flash of boot.img, preloader.bin) that does not react on buttons no logo, no charging sign. The NVRAM and NVDATA partitions that contain IMEI numbers, reuired for the phone operation, can be backed up.
+
+In order to make SP Flash Tool functional a phone must have an unlocked bootloader. Not all smartphone vendors allow to unlock bootloader. The butloader has to be unlocked when the phone is functioning normally. Additionally, ensure your phone's MTK processor has available MTK bypass. New MTK processors are locked for low-level connection to PC.
 
 The script takes the data on partition's offset and partition length from the Scatter.txt file, which is unique for each smarphone model. The Scatter file can be obtained from the official firmware for the smartphone.
 
 Take the output of the script and paste it into the ```readback_ui_bak.xml``` file located in the the SP flash tool directory.
+  <img alt="MTK SP Flash Tool Readback feature file generator" src="https://raw.githubusercontent.com/Eb43/readbackbackup/main/MTK%20SP%20Flash%20Tool%20Readback%20feature%20file%20generator.jpg" style="width: 500px; object-fit: none; object-position: 1% 1%"/>
+
 
 Note the preloader readback adress should be added manually, since it is located in other part of the phone's NAND flash.
 
@@ -34,9 +38,11 @@ The  ```readback_ui_bak.xml``` file is created automatically by the SP flash too
 
 ## MTK SP Flash Tool генератор файла функции Readback
 
-Телефоны на процессорах MTK можно полностью сохранить с помощью утилиты SP Flash Tool. Этот резервный файл можно использовать для восстановления работоспособности телефона после серьезных проблем с его прошивкой, включая полный "кирпич" (ошибочная прошивка boot.img, preloader.bin), при котором устройство не реагирует на кнопки, нет логотипа, нет признаков зарядки. Разделы NVRAM и NVDATA, которые содержат IMEI-номера, необходимые для работы телефона, также можно сохранить.
+Ссілка на скрипт: https://github.com/Eb43/readbackbackup/blob/main/converter.html
 
-Чтобы SP Flash Tool мог функционировать, телефон должен иметь разблокированный загрузчик. Не все производители смартфонов позволяют разблокировать загрузчик. Загрузчик должен быть разблокирован, пока телефон находится в рабочем состоянии.
+Телефоны на процессорах MTK (обычно Xiaomi, Poco, Redmi, Vivo, Oppo, Realme, Motorola, Nokia, Alcatel, Techno, ZTE) могут быть полностью сохранены с помощью утилиты SP Flash Tool. Эта резервная копия может быть использована для восстановления функциональности телефона после серьёзных проблем с прошивкой, включая полную "кирпичную" блокировку (неправильная прошивка boot.img, preloader.bin), когда телефон не реагирует на кнопки, нет логотипа или признаков зарядки. Разделы NVRAM и NVDATA, содержащие номера IMEI, необходимые для работы телефона, также можно сохранить.
+
+Для того чтобы SP Flash Tool работал, у телефона должен быть разблокирован загрузчик. Не все производители смартфонов позволяют разблокировать загрузчик. Разблокировка загрузчика должна быть выполнена, когда телефон работает нормально. Кроме того, убедитесь, что для процессора MTK вашего телефона доступен MTK bypass. Новые процессоры MTK заблокированы для подключения к ПК на низком уровне.
 
 Скрипт берет данные о смещении разделов и длине разделов из файла Scatter.txt, который уникален для каждой модели смартфона. Файл Scatter можно получить из официальной прошивки для смартфона.
 
