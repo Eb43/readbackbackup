@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTK SP Flash Tool Readback feature file generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            font-family: monospace;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MTK SP Flash Tool Readback feature file generator</h1>
+        
+        <label for="inputData"><strong>Input Dataset:</strong></label><br>
+        <textarea id="inputData" rows="20" placeholder="Paste your Scatter file dataset here...">
+- partition_index: SYS20
+  partition_name: md_udc
+  file_name: NONE
+  is_download: false
+  type: NORMAL_ROM
+  linear_start_addr: 0x54808000
+  physical_start_addr: 0x54808000
+  partition_size: 0x169a000
+  region: UFS_LU2
+  storage: HW_STORAGE_UFS
+  boundary_check: true
+  is_reserved: false
+  operation_type: INVISIBLE
+  is_upgradable: false
+  empty_boot_needed: false
+  combo_partsize_check: false
+  reserve: 0x00
+
+- partition_index: SYS62
+  partition_name: userdata
+  file_name: userdata.img
+  is_download: true
+  type: EXT4_IMG
+  linear_start_addr: 0x2b6000000
+  physical_start_addr: 0x2b6000000
+  partition_size: 0x280000000
+  region: UFS_LU2
+  storage: HW_STORAGE_UFS
+  boundary_check: true
+  is_reserved: false
+  operation_type: UPDATE
+  is_upgradable: false
+  empty_boot_needed: false
+  combo_partsize_check: true
+  reserve: 0x00
+        </textarea>
+        <br>
+        <button onclick="generateReadbackRomItems()">Generate</button>
+        
+        <h2>Generated Readback ROM Items</h2>
+        <textarea id="outputData" rows="10" readonly placeholder="Your output will appear here..."></textarea>
+    </div>
+
+    <script>
+        function generateReadbackRomItems() {
+            try {
+                const inputData = document.getElementById('inputData').value;
+                const entries = inputData.split(/\n\s*-\s+/).filter(entry => entry.trim() !== '');
+
+                const outputArray = [];
+
+                entries.forEach(entry => {
+                    const lines = entry.split('\n');
+                    const data = {};
+
+                    lines.forEach(line => {
+                        const trimmedLine = line.trim().replace(/^-/, '').trim();
+                        if (trimmedLine === '') return;
+
+                        const separatorIndex = trimmedLine.indexOf(':');
+                        if (separatorIndex === -1) return;
+
+                        const key = trimmedLine.substring(0, separatorIndex).trim();
+                        let value = trimmedLine.substring(separatorIndex + 1).trim();
+
+                        value = value.replace(/^["']|["']$/g, '');
+
+                        data[key] = value;
+                    });
+
+                    const partitionIndexStr = data['partition_index'];
+                    if (!partitionIndexStr) {
+                        alert('Error: partition_index not found.');
+                        return;
+                    }
+
+                    const partitionIndexMatch = partitionIndexStr.match(/^SYS(\d+)$/);
+                    if (!partitionIndexMatch) {
+                        alert('Error: partition_index format is incorrect.');
+                        return;
+                    }
+
+                    const partitionIndex = partitionIndexMatch[1];
+                    const partitionName = data['partition_name'] || 'UNKNOWN_PARTITION';
+                    const physicalStartAddr = data['physical_start_addr'] || '0x0000000000000000';
+                    const partitionSize = data['partition_size'] || '0x00000000';
+
+                    let startAddress = physicalStartAddr.toLowerCase();
+                    if (startAddress.startsWith('0x')) {
+                        startAddress = startAddress.slice(2);
+                    }
+                    startAddress = startAddress.padStart(16, '0');
+                    startAddress = '0x' + startAddress;
+
+                    let readbackLength = partitionSize.toLowerCase();
+                    if (!readbackLength.startsWith('0x')) {
+                        readbackLength = '0x' + readbackLength;
+                    }
+
+                    const filePath = `D:\\ReadbackBackup\\${partitionName}`;
+
+                    const outputString = `<readback-rom-item readback-index="${partitionIndex}" readback-enable="true" readback-flag="NUTL_READ_PAGE_ONLY" start-address="${startAddress}" readback-length="${readbackLength}" addr-flag="NUTL_ADDR_LOGICAL" part-id="34">${filePath}</readback-rom-item>`;
+
+                    outputArray.push(outputString);
+                });
+
+                document.getElementById('outputData').value = outputArray.join('\n');
+            } catch (error) {
+                console.error('An error occurred:', error);
+                alert('An unexpected error occurred. Please check the console for details.');
+            }
+        }
+    </script>
+</body>
+</html>
